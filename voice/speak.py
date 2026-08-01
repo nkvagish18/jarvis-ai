@@ -1,24 +1,45 @@
-import pyttsx3
+import asyncio
+import edge_tts
+import pygame
+import tempfile
+import os
 
 
 class Speaker:
 
     def __init__(self):
-        self.engine = pyttsx3.init()
+        pygame.mixer.init()
 
-        # Voice settings
-        self.engine.setProperty("rate", 170)
-        self.engine.setProperty("volume", 1.0)
+        # Change this voice later if you like
+        self.voice = "en-US-AriaNeural"
 
+    async def _generate(self, text, filename):
+        communicate = edge_tts.Communicate(text, self.voice)
+        await communicate.save(filename)
 
     def speak(self, text):
+
         print("Jarvis:", text)
 
-        self.engine.say(text)
-        self.engine.runAndWait()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
+            filename = fp.name
+
+        asyncio.run(self._generate(str(text), filename))
+
+        pygame.mixer.music.load(filename)
+        pygame.mixer.music.play()
+
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+
+        pygame.mixer.music.unload()
+
+        os.remove(filename)
 
 
-# Test
 if __name__ == "__main__":
-    jarvis = Speaker()
-    jarvis.speak("Hello Vagish, I am Jarvis. My voice system is ready.")
+    speaker = Speaker()
+
+    speaker.speak("Hello Vagish.")
+    speaker.speak("This is Jarvis.")
+    speaker.speak("Everything is working perfectly.")

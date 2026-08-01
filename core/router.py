@@ -4,6 +4,7 @@ from commands.web import Web
 from commands.system import System
 from services.search import SearchService
 from services.youtube import YouTubeService
+from services.wikipedia import WikipediaService
 
 
 class Router:
@@ -50,6 +51,11 @@ class Router:
         )
 
         self.registry.register(
+            ["who is", "what is", "tell me about", "explain"],
+            lambda cmd: WikipediaService.search(cmd)
+        )
+
+        self.registry.register(
             ["open youtube"],
             lambda cmd: Web.open_youtube()
         )
@@ -58,7 +64,7 @@ class Router:
             ["play","search youtube","youtube"],
             lambda cmd: YouTubeService.search(cmd)
         )
-        
+
         # System
         self.registry.register(
             ["what time", "time"],
