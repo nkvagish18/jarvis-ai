@@ -1,4 +1,5 @@
-import wikipedia
+import requests
+from core.parser import Parser
 
 
 class WikipediaService:
@@ -6,35 +7,34 @@ class WikipediaService:
     @staticmethod
     def search(command):
 
-        prefixes = [
-            "who is",
-            "what is",
-            "tell me about",
-            "explain"
-        ]
+        query = Parser.extract_wikipedia_query(command)
 
-        query = command
+        print(f"[Wikipedia] {query}")
 
-        for prefix in prefixes:
-            if query.lower().startswith(prefix):
-                query = query[len(prefix):].strip()
-                break
+        url = (
+            f"https://en.wikipedia.org/api/rest_v1/page/summary/"
+            f"{query.replace(' ', '_')}"
+        )
 
         try:
-            page = wikipedia.page(query, auto_suggest=True)
+            response = requests.get(
+                url,
+                headers={
+                    "User-Agent": "JarvisAI/1.0"
+                },
+                timeout=10
+            )
 
-            summary = wikipedia.summary(page.title, sentences=2)
+            if response.status_code != 200:
+                return "I couldn't find anything on Wikipedia."
 
-            print(f"[Wikipedia] {page.title}")
+            data = response.json()
 
-            return summary
+            if "extract" in data:
+                return data["extract"]
 
-        except wikipedia.DisambiguationError as e:
-            return f"There are multiple results. Try '{e.options[0]}'."
-
-        except wikipedia.PageError:
             return "I couldn't find anything on Wikipedia."
 
         except Exception as e:
             print(e)
-            return "Something went wrong while searching Wikipedia."
+            return "Wikipedia service is currently unavailable."

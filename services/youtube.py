@@ -1,5 +1,5 @@
 import webbrowser
-from urllib.parse import quote
+from core.parser import Parser
 
 
 class YouTubeService:
@@ -7,28 +7,12 @@ class YouTubeService:
     @staticmethod
     def search(command):
 
-        query = command.lower()
+        query = Parser.extract_youtube_query(command)
 
-        prefixes = [
-            "play",
-            "search youtube",
-            "youtube",
-            "search on youtube"
-        ]
+        print(f"[YouTube] {query}")
 
-        for prefix in prefixes:
-            if query.startswith(prefix):
-                query = query.replace(prefix, "", 1).strip()
-                break
-
-        if not query:
-            webbrowser.open("https://youtube.com")
-            return "Opening YouTube"
-
-        print(f"[YouTube Search] {query}")
-
-        url = f"https://www.youtube.com/results?search_query={quote(query)}"
-
-        webbrowser.open(url)
+        webbrowser.open(
+            f"https://www.youtube.com/results?search_query={query}"
+        )
 
         return f"Searching YouTube for {query}"

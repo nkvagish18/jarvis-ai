@@ -1,10 +1,13 @@
 from core.command_registry import CommandRegistry
+
 from commands.apps import Apps
 from commands.web import Web
 from commands.system import System
+
 from services.search import SearchService
 from services.youtube import YouTubeService
 from services.wikipedia import WikipediaService
+from services.weather import WeatherService
 
 
 class Router:
@@ -13,7 +16,16 @@ class Router:
 
         self.registry = CommandRegistry()
 
-        # Apps
+        self._register_apps()
+        self._register_system()
+        self._register_web()
+
+    # -----------------------
+    # Apps
+    # -----------------------
+
+    def _register_apps(self):
+
         self.registry.register(
             ["open notepad"],
             lambda cmd: Apps.open_notepad()
@@ -39,33 +51,12 @@ class Router:
             lambda cmd: Apps.open_explorer()
         )
 
-        # Web
-        self.registry.register(
-            ["open google"],
-            lambda cmd: Web.open_google()
-        )
+    # -----------------------
+    # System
+    # -----------------------
 
-        self.registry.register(
-            ["search","google"],
-            lambda cmd: SearchService.google(cmd)
-        )
+    def _register_system(self):
 
-        self.registry.register(
-            ["who is", "what is", "tell me about", "explain"],
-            lambda cmd: WikipediaService.search(cmd)
-        )
-
-        self.registry.register(
-            ["open youtube"],
-            lambda cmd: Web.open_youtube()
-        )
-
-        self.registry.register(
-            ["play","search youtube","youtube"],
-            lambda cmd: YouTubeService.search(cmd)
-        )
-
-        # System
         self.registry.register(
             ["what time", "time"],
             lambda cmd: System.get_time()
@@ -76,14 +67,69 @@ class Router:
             lambda cmd: System.get_date()
         )
 
+    # -----------------------
+    # Web
+    # -----------------------
+
+    def _register_web(self):
+
+        self.registry.register(
+            [
+                "weather",
+                "temperature",
+                "forecast",
+                "humidity",
+                "wind"
+            ],
+            lambda cmd: WeatherService.get_weather(cmd)
+        )
+
+        self.registry.register(
+            ["open google"],
+            lambda cmd: Web.open_google()
+        )
+
+        self.registry.register(
+            ["open youtube"],
+            lambda cmd: Web.open_youtube()
+        )
+
+        self.registry.register(
+            ["play", "search youtube", "youtube"],
+            lambda cmd: YouTubeService.search(cmd)
+        )
+
+        self.registry.register(
+            ["search", "google"],
+            lambda cmd: SearchService.google(cmd)
+        )
+
+        # Wikipedia only for encyclopedia topics
+        self.registry.register(
+            [
+                "who is",
+                "tell me about",
+                "history of",
+                "biography of",
+                "capital of"
+            ],
+            lambda cmd: WikipediaService.search(cmd)
+        )
+
+    # -----------------------
+    # Route
+    # -----------------------
+
     def route(self, command):
 
-        result = self.registry.execute(command)
+        command = command.strip().lower()
 
-        if result:
-            return result
-
-        if "shutdown" in command.lower():
+        if command in [
+            "shutdown",
+            "exit",
+            "quit",
+            "goodbye"
+        ]:
             return "shutdown"
 
-        return None
+        return self.registry.execute(command)
