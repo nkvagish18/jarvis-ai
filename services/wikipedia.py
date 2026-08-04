@@ -36,5 +36,7 @@ class WikipediaService:
             return "I couldn't find anything on Wikipedia."
 
         except Exception as e:
-            print(e)
-            return "Wikipedia service is currently unavailable."
+            logger.error("Wikipedia", e)
+            return (
+                "I couldn't find information about that topic."
+            )

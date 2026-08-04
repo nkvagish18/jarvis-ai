@@ -91,3 +91,27 @@ class Parser:
                 return command.replace(prefix, "").strip().title()
 
         return None
+
+    @staticmethod
+    def extract_news_category(command):
+
+        command = command.lower()
+
+        if "technology" in command:
+            return "technology"
+
+        if "sports" in command:
+            return "sports"
+
+        if "business" in command:
+            return "business"
+
+        if "health" in command:
+            return "health"
+
+        if "science" in command:
+            return "science"
+
+        return "general"
+
+    

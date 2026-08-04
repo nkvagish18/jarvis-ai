@@ -24,5 +24,8 @@ class AI:
             return response.text
 
         except Exception as e:
-
-            return f"Error: {e}"
+            logger.error("Gemini", e)
+            return (
+                "I'm sorry, I couldn't process your request right now. "
+                "Please try again in a moment."
+            )

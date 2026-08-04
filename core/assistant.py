@@ -36,4 +36,16 @@ class Assistant:
             if response is None:
                 response = self.ai.ask(command)
 
-            self.speaker.speak(response)
+            # Handle news headlines
+            if isinstance(response, list):
+
+                self.speaker.speak("Here are today's top headlines.")
+
+                words = ["First", "Second", "Finally"]
+
+                for i, headline in enumerate(response):
+                    self.speaker.speak(words[i])
+                    self.speaker.speak(headline)
+
+            else:
+                self.speaker.speak(response)

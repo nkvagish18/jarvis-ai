@@ -27,3 +27,13 @@ class Apps:
     def open_explorer():
         subprocess.Popen("explorer")
         return "Opening File Explorer"
+
+    @staticmethod
+    def open_notepad():
+        try:
+            subprocess.Popen("notepad")
+            return "Opening Notepad."
+
+        except Exception as e:
+            print(f"[Apps Error] {e}")
+            return "I couldn't open Notepad."

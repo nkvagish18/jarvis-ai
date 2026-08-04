@@ -54,5 +54,8 @@ class WeatherService:
             return "Unable to connect to the weather service."
 
         except Exception as e:
-            print(e)
-            return "Something went wrong while getting the weather."
+            logger.error("Weather", e)
+            return (
+                "I couldn't retrieve the weather right now. "
+                "Please try again later."
+            )

@@ -65,11 +65,16 @@ class Intent:
             "search",
             "google",
             "latest",
-            "news",
             "today",
             "current",
             "price",
-            "score"
+            "score",
+            "news",
+            "headlines",
+            "technology news",
+            "sports news",
+            "business news",
+            "ai news"
         ]
 
         if any(word in command for word in google_words):
@@ -90,9 +95,32 @@ class Intent:
 
         # ---------------- System ----------------
 
-        if "time" in command or "date" in command:
-            return "system"
+        system_words = [
+            "time",
+            "date",
+            "battery",
+            "battery percentage",
+            "battery status",
+            "charge",
+            "power",
+            "cpu",
+            "processor",
+            "ram",
+            "memory",
+            "memory usage",
+            "ram usage",
+            "disk",
+            "storage",
+            "disk usage",
+            "free space",
+            "ip",
+            "ip address",
+            "network"
+        ]
 
+        if any(word in command for word in system_words):
+            return "system"
+        
         # ---------------- Gemini ----------------
 
         return "gemini"

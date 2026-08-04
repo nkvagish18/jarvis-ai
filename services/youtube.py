@@ -9,10 +9,17 @@ class YouTubeService:
 
         query = Parser.extract_youtube_query(command)
 
-        print(f"[YouTube] {query}")
+        try:
+            print(f"[YouTube] {query}")
 
-        webbrowser.open(
-            f"https://www.youtube.com/results?search_query={query}"
-        )
+            webbrowser.open(
+                f"https://www.youtube.com/results?search_query={query}"
+            )
 
-        return f"Searching YouTube for {query}"
+            return f"Searching YouTube for {query}"
+
+        except Exception as e:
+            logger.error("Youtube", e)
+            return (
+                "I couldn't open YouTube right now."
+            )

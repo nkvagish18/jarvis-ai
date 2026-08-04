@@ -9,6 +9,8 @@ from services.youtube import YouTubeService
 from services.wikipedia import WikipediaService
 from services.weather import WeatherService
 
+from services.system_monitor import SystemMonitor
+from services.news import NewsService
 
 class Router:
 
@@ -58,6 +60,55 @@ class Router:
     def _register_system(self):
 
         self.registry.register(
+            [
+                "battery",
+                "battery percentage",
+                "battery status",
+                "charge",
+                "power"
+            ],
+            lambda cmd: SystemMonitor.battery()
+        )
+
+        self.registry.register(
+            [
+                "cpu",
+                "cpu usage",
+                "processor"
+            ],
+            lambda cmd: SystemMonitor.cpu()
+        )
+
+        self.registry.register(
+            [
+                "ram",
+                "memory",
+                "ram usage",
+                "memory usage"
+            ],
+            lambda cmd: SystemMonitor.memory()
+        )
+
+        self.registry.register(
+            [
+                "disk",
+                "storage",
+                "disk usage",
+                "free space"
+            ],
+            lambda cmd: SystemMonitor.disk()
+        )
+
+        self.registry.register(
+            [
+                "ip",
+                "ip address",
+                "network address"
+            ],
+            lambda cmd: SystemMonitor.ip()
+        )
+
+        self.registry.register(
             ["what time", "time"],
             lambda cmd: System.get_time()
         )
@@ -82,6 +133,19 @@ class Router:
                 "wind"
             ],
             lambda cmd: WeatherService.get_weather(cmd)
+        )
+
+        self.registry.register(
+            [
+                "news",
+                "headlines",
+                "technology news",
+                "sports news",
+                "business news",
+                "health news",
+                "science news"
+            ],
+            lambda cmd: NewsService.get_news(cmd)
         )
 
         self.registry.register(
