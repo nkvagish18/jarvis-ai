@@ -1,6 +1,7 @@
 import os
+import json
+import google.generativeai as genai
 from dotenv import load_dotenv
-from google import genai
 
 load_dotenv()
 
@@ -8,24 +9,52 @@ load_dotenv()
 class AI:
 
     def __init__(self):
-        self.client = genai.Client(
+
+        genai.configure(
             api_key=os.getenv("GEMINI_API_KEY")
         )
+
+        self.model = genai.GenerativeModel(
+            "gemini-2.5-flash"
+        )
+
+    # ---------------- Normal Chat ----------------
 
     def ask(self, prompt):
 
         try:
 
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            response = self.model.generate_content(prompt)
 
-            return response.text
+            return response.text.strip()
 
         except Exception as e:
-            logger.error("Gemini", e)
+
+            print(f"[Gemini Error] {e}")
+
             return (
-                "I'm sorry, I couldn't process your request right now. "
-                "Please try again in a moment."
+                "I'm sorry, I couldn't process your request right now."
             )
+
+    # ---------------- JSON Extraction ----------------
+
+    def extract_json(self, prompt):
+
+        try:
+
+            response = self.model.generate_content(prompt)
+
+            text = response.text.strip()
+
+            # Remove markdown fences if Gemini adds them
+            text = text.replace("```json", "")
+            text = text.replace("```", "")
+            text = text.strip()
+
+            return json.loads(text)
+
+        except Exception as e:
+
+            print(f"[Gemini JSON Error] {e}")
+
+            return {}
