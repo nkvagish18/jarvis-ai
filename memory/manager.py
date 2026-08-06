@@ -1,13 +1,10 @@
 import json
 import os
-
+from utils.config import Config
 
 class MemoryManager:
 
-    FILE = os.path.join(
-        os.path.dirname(__file__),
-        "storage.json"
-    )
+    FILE = Config.MEMORY_FILE
 
     @staticmethod
     def load():

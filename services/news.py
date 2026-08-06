@@ -2,11 +2,11 @@ import os
 from urllib import response
 import requests
 from dotenv import load_dotenv
-
+from utils.config import Config
 from core.parser import Parser
+from utils.logger import logger
 
 load_dotenv()
-
 
 class NewsService:
 
@@ -15,7 +15,7 @@ class NewsService:
 
         category = Parser.extract_news_category(command)
 
-        api_key = os.getenv("NEWS_API_KEY")
+        api_key = Config.NEWS_API_KEY
 
         url = (
             "https://newsapi.org/v2/everything"

@@ -1,21 +1,16 @@
-import os
 import json
-import google.generativeai as genai
-from dotenv import load_dotenv
 
-load_dotenv()
+from google import genai
+from utils.logger import logger
+from utils.config import Config
 
 
 class AI:
 
     def __init__(self):
 
-        genai.configure(
-            api_key=os.getenv("GEMINI_API_KEY")
-        )
-
-        self.model = genai.GenerativeModel(
-            "gemini-2.5-flash"
+        self.client = genai.Client(
+            api_key=Config.GEMINI_API_KEY
         )
 
     # ---------------- Normal Chat ----------------
@@ -24,13 +19,36 @@ class AI:
 
         try:
 
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model=Config.GEMINI_MODEL,
+                contents=prompt
+            )
+
+            if not response or not getattr(response, "text", None):
+                return "I couldn't generate a response."
 
             return response.text.strip()
 
         except Exception as e:
 
-            print(f"[Gemini Error] {e}")
+            logger.error(f"[Gemini Error] {e}")
+
+            error = str(e).lower()
+
+            if "503" in error or "unavailable" in error:
+                return (
+                    "I'm a little busy right now. Please try again in a few seconds."
+                )
+
+            if "429" in error:
+                return (
+                    "I've reached my request limit for now. Please try again later."
+                )
+
+            if "401" in error:
+                return (
+                    "There seems to be an authentication problem with the AI service."
+                )
 
             return (
                 "I'm sorry, I couldn't process your request right now."
@@ -42,11 +60,13 @@ class AI:
 
         try:
 
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model=Config.GEMINI_MODEL,
+                contents=prompt
+            )
 
             text = response.text.strip()
 
-            # Remove markdown fences if Gemini adds them
             text = text.replace("```json", "")
             text = text.replace("```", "")
             text = text.strip()
@@ -55,6 +75,26 @@ class AI:
 
         except Exception as e:
 
-            print(f"[Gemini JSON Error] {e}")
+            logger.error(f"[Gemini JSON Error] {e}")
 
             return {}
+
+    # ---------------- Context Chat ----------------
+
+    def chat(self, message, conversation=""):
+
+        prompt = f"""
+You are Jarvis, an intelligent AI assistant.
+
+Conversation history:
+
+{conversation}
+
+Current user message:
+
+{message}
+
+Answer naturally and conversationally.
+"""
+
+        return self.ask(prompt)

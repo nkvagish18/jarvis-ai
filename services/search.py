@@ -1,6 +1,6 @@
 import webbrowser
 from core.parser import Parser
-
+from utils.logger import logger
 
 class SearchService:
 
@@ -10,7 +10,7 @@ class SearchService:
         query = Parser.extract_google_query(command)
 
         try:
-            print(f"[Google Search] {query}")
+            logger.info(f"[Google Search] {query}")
             webbrowser.open(
                 f"https://www.google.com/search?q={query}"
             )

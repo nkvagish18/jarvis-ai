@@ -1,7 +1,5 @@
-from memory.search import MemorySearch
+from utils.logger import logger
 
-search = MemorySearch()
-
-print(search.search("Where do I study?"))
-print(search.search("What city do I live in?"))
-print(search.search("What is my favorite movie?"))
+logger.info("Jarvis started")
+logger.warning("Weather API is slow")
+logger.error("Wikipedia failed")

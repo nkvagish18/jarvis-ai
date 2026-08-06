@@ -1,6 +1,6 @@
 import requests
 from core.parser import Parser
-
+from utils.logger import logger
 
 class WikipediaService:
 
@@ -9,7 +9,7 @@ class WikipediaService:
 
         query = Parser.extract_wikipedia_query(command)
 
-        print(f"[Wikipedia] {query}")
+        logger.info(f"[Wikipedia] {query}")
 
         url = (
             f"https://en.wikipedia.org/api/rest_v1/page/summary/"

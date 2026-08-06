@@ -2,8 +2,9 @@ import os
 from urllib import response
 import requests
 from dotenv import load_dotenv
-
+from utils.config import Config
 from core.parser import Parser
+from utils.logger import logger
 
 load_dotenv()
 
@@ -19,7 +20,7 @@ class WeatherService:
         if not city:
             city = "Bengaluru"
 
-        api_key = os.getenv("WEATHER_API_KEY")
+        api_key = Config.WEATHER_API_KEY
 
         url = (
             "https://api.openweathermap.org/data/2.5/weather"
