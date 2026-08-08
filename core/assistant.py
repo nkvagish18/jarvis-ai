@@ -2,6 +2,7 @@ from core.ai import AI
 from voice.listen import Listener
 from voice.speak import Speaker
 from core.brain import Brain
+from utils.logger import logger
 
 
 class Assistant:
@@ -25,7 +26,7 @@ class Assistant:
 
             command = self.listener.listen()
 
-            print("You:", command)
+            logger.info("You: %s", command)
 
             response = self.brain.process(command)
 

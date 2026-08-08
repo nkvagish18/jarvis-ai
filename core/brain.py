@@ -1,18 +1,18 @@
 from core.router import Router
 from core.ai import AI
 from core.intent import Intent
-
 from memory.extractor import MemoryExtractor
 from memory.profile import Profile
 from memory.search import MemorySearch
 from memory.conversation import ConversationMemory
 from core.plugin_router import PluginRouter
 from utils.logger import logger
+from typing import Optional
 
 
 class Brain:
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.router = Router()
 
@@ -26,7 +26,7 @@ class Brain:
 
         self.plugin_router = PluginRouter()
 
-    def process(self, command):
+    def process(self, command: str) -> Optional[str]:
 
         # ---------------- Intent ----------------
 

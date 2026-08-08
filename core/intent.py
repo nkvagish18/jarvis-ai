@@ -4,7 +4,7 @@ import re
 class Intent:
 
     @staticmethod
-    def detect(command):
+    def detect(command: str) -> str:
 
         command = command.lower().strip()
 

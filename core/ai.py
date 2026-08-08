@@ -15,7 +15,7 @@ class AI:
 
     # ---------------- Normal Chat ----------------
 
-    def ask(self, prompt):
+    def ask(self, prompt: str) -> str:
 
         try:
 
@@ -56,7 +56,7 @@ class AI:
 
     # ---------------- JSON Extraction ----------------
 
-    def extract_json(self, prompt):
+    def extract_json(self, prompt: str) -> dict:
 
         try:
 
@@ -81,8 +81,7 @@ class AI:
 
     # ---------------- Context Chat ----------------
 
-    def chat(self, message, conversation=""):
-
+    def chat(self, message: str, conversation: str = "") -> str:
         prompt = f"""
 You are Jarvis, an intelligent AI assistant.
 

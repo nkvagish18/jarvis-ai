@@ -14,7 +14,7 @@ from services.news import NewsService
 
 class Router:
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.registry = CommandRegistry()
 
@@ -184,7 +184,7 @@ class Router:
     # Route
     # -----------------------
 
-    def route(self, command):
+    def route(self, command: str) -> str | None:
 
         command = command.strip().lower()
 
