@@ -2,7 +2,7 @@ import json
 import os
 import unittest
 from unittest.mock import patch
-
+from unittest.mock import patch, mock_open
 from memory.manager import MemoryManager
 
 
@@ -94,6 +94,36 @@ class TestMemoryManager(unittest.TestCase):
         mock_open.side_effect = FileNotFoundError
 
         result = MemoryManager.load()
+
+        self.assertEqual(
+            result,
+            {}
+        )
+
+    def test_corrupted_memory_file_returns_empty_dict(self):
+
+        with patch(
+            "builtins.open",
+            mock_open(
+                read_data="{ invalid json"
+            )
+        ):
+
+            result = MemoryManager.load()
+
+        self.assertEqual(
+            result,
+            {}
+        )
+
+    def test_missing_memory_file_returns_empty_dict(self):
+
+        with patch(
+            "builtins.open",
+            side_effect=FileNotFoundError
+        ):
+
+            result = MemoryManager.load()
 
         self.assertEqual(
             result,

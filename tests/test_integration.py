@@ -191,6 +191,87 @@ class TestJarvisIntegration(unittest.TestCase):
             "a function calls itself."
         )
 
+    # ---------------- Memory ----------------
+
+    @patch("core.brain.MemorySearch")
+    @patch("core.brain.AI")
+    def test_memory_first_flow(self, mock_ai, mock_search):
+
+        mock_search.return_value.search.return_value = (
+            "You study at RNSIT in Bangalore."
+        )
+
+        brain = Brain()
+
+        command = "where do I study"
+
+        response = brain.process(command)
+
+        mock_search.return_value.search.assert_called_once_with(
+            command
+        )
+
+        # Gemini must NOT be called
+        mock_ai.return_value.chat.assert_not_called()
+
+        self.assertEqual(
+            response,
+            "You study at RNSIT in Bangalore."
+        )
+
+        # ---------------- Memory Learning ----------------
+
+    @patch("core.brain.Profile")
+    @patch("core.brain.MemoryExtractor")
+    @patch("core.brain.MemorySearch")
+    @patch("core.brain.AI")
+    def test_memory_learning_flow(
+        self,
+        mock_ai,
+        mock_search,
+        mock_extractor,
+        mock_profile
+    ):
+
+        # No existing memory
+        mock_search.return_value.search.return_value = None
+
+        # Mock Gemini response
+        mock_ai.return_value.chat.return_value = (
+            "Got it! I'll remember that."
+        )
+
+        # Mock extracted fact
+        mock_extractor.return_value.extract.return_value = {
+            "skills": ["Python"]
+        }
+
+        brain = Brain()
+
+        command = "I am learning Python"
+
+        response = brain.process(command)
+
+        # Gemini was used
+        mock_ai.return_value.chat.assert_called_once()
+
+        # Memory extraction happened
+        mock_extractor.return_value.extract.assert_called_once_with(
+            command
+        )
+
+        # Profile was updated
+        mock_profile.remember.assert_called_once_with(
+            {
+                "skills": ["Python"]
+            }
+        )
+
+        self.assertEqual(
+            response,
+            "Got it! I'll remember that."
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

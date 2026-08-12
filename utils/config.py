@@ -7,7 +7,7 @@ load_dotenv()
 class Config:
     # ================= AI =================
 
-    GEMINI_MODEL = "gemini-2.0-flash"
+    GEMINI_MODEL = "gemini-2.5-flash"
 
     # ================= Conversation =================
 

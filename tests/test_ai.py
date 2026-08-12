@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-
+from unittest.mock import Mock
 from core.ai import AI
 
 
@@ -209,6 +209,40 @@ class TestAI(unittest.TestCase):
         self.assertEqual(
             result,
             "Hello Vagish!"
+        )
+
+    @patch("core.ai.genai.Client")
+    def test_extract_json_with_whitespace(self, mock_client):
+
+        mock_response = MagicMock()
+
+        mock_response.text = """
+        
+        ```json
+        {
+            "name": "Vagish",
+            "skills": ["Python"]
+        }
+        ```
+        
+        """
+
+        mock_client.return_value.models.generate_content.return_value = (
+            mock_response
+        )
+
+        ai = AI()
+
+        result = ai.extract_json(
+            "Extract the user's information as JSON."
+        )
+
+        self.assertEqual(
+            result,
+            {
+                "name": "Vagish",
+                "skills": ["Python"]
+            }
         )
 
 
