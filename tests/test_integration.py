@@ -58,7 +58,7 @@ class TestJarvisIntegration(unittest.TestCase):
 
     # ---------------- Weather ----------------
 
-    @patch("services.weather.WeatherService.get_weather")
+    @patch("services.weather_service.WeatherService.get_weather")
     def test_weather_flow(self, mock_weather):
 
         mock_weather.return_value = (

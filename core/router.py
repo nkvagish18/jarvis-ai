@@ -7,7 +7,7 @@ from commands.system import System
 from services.search import SearchService
 from services.youtube import YouTubeService
 from services.wikipedia import WikipediaService
-from services.weather import WeatherService
+from services.weather_service import WeatherService
 
 from services.system_monitor import SystemMonitor
 from services.news import NewsService
